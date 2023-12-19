@@ -1,0 +1,32 @@
+<div class="text-white container-fluid d-flex justify-content-center align-items-center mb-5" [ngStyle]="{'background-color': getReservedTripsCount() >= 10 ? 'green' : 'red'}">
+  <p>Sumaryczna ilość zarezerwowanych wycieczek: {{ getReservedTripsCount() }}</p>
+</div>
+
+<div class="container-fluid w-75 d-flex justify-content-center flex-wrap">
+    <div *ngFor="let trip of trips" class="card col-12 col-md-6 col-lg-4">
+      <div [style.background-color]="shouldHidePlusButton(trip.id) ? 'lightgray' : 'white'" [ngStyle]="{'border-color': isGettingSoldOut(trip.id) ? 'red' : 'black'}"
+        class="px-4"
+      >
+        <img [src]="trip.photoLink"
+             alt="Trip Photo" style="border-radius: 50%;" class="card-img-top img-fluid">
+        <div class="card-body">
+          <h3 class="card-title">{{ trip.name | uppercase }} - {{ trip.country | uppercase }}</h3>
+          <div class="card-text">
+            <p>{{ trip.description }}</p>
+            <p>From: {{ trip.startDate }}</p>
+            <p>To: {{ trip.endDate }}</p>
+            <p>Price: {{ trip.unitPrice | currency:'USD':'symbol':'1.2-2' }}</p>
+            <p>Places left: {{ trip.maxCapacity - trip.reservedCapacity }}</p>
+          </div>
+          <div class="d-flex align-items-center">
+            <button class="btn btn-success m-2 px-3" (click)="reserveSpot(trip.id)" [disabled]="shouldHidePlusButton(trip.id)">+</button>
+            <button class="btn btn-danger m-2 px-3" (click)="cancelReservation(trip.id)" [disabled]="trip.maxCapacity - trip.reservedCapacity === trip.maxCapacity">-</button>
+            <div *ngIf="isSoldOut(trip.id)">SOLD OUT</div>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
+
+
+
