@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import {CurrencyPipe, NgForOf, NgIf, NgStyle, UpperCasePipe} from "@angular/common";
 import {TripListService} from "../../services/tripListService/trip-list.service";
 import {Trip} from "../../types";
+import {FormsModule} from "@angular/forms";
+import {exchangeRates} from "./tripsDummyData/money";
 @Component({
   selector: 'app-trip-list',
   standalone: true,
@@ -10,13 +12,18 @@ import {Trip} from "../../types";
     UpperCasePipe,
     CurrencyPipe,
     NgIf,
-    NgStyle
+    NgStyle,
+    FormsModule
   ],
   templateUrl: './trip-list.component.html',
   styleUrls: ['./trip-list.component.css']
 })
 export class TripListComponent {
   trips: Trip[] = [];
+  currency: string = "";
+  currencyRate: number = 1;
+  currenciesList: string[] = ['USD', 'EUR', 'GBP', 'JPY', 'PLN'];
+
   tripsMap: Map<number, number> = new Map<number, number>();
   reserveSpot(tripId: number) {
     let idMapped = this.tripsMap.get(tripId);
@@ -60,11 +67,21 @@ export class TripListComponent {
     if(idMapped === undefined) return false;
     return this.trips[idMapped].maxCapacity - this.trips[idMapped].reservedCapacity <= 3;
   }
+
+  changeCurrency(currency: string) {
+    this.currency = currency;
+    this.currencyRate = exchangeRates.get(currency) || 1;
+  }
+
   constructor(private tripListService: TripListService) {
     this.trips = tripListService.trips;
+    this.currency = tripListService.selectedCurrency;
+    this.currencyRate = tripListService.currencyRate;
     for (let i = 0; i < this.trips.length; i++) {
       this.tripsMap.set(this.trips[i].id, i);
     }
   }
 
+  protected readonly exchangeRates = exchangeRates;
+  protected readonly customElements = customElements;
 }
