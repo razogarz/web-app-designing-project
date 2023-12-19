@@ -73,15 +73,25 @@ export class TripListComponent {
     this.currencyRate = exchangeRates.get(currency) || 1;
   }
 
+    updateTripsMap() {
+        for (let i = 0; i < this.trips.length; i++) {
+        this.tripsMap.set(this.trips[i].id, i);
+        }
+    }
+
   constructor(private tripListService: TripListService) {
     this.trips = tripListService.trips;
     this.currency = tripListService.selectedCurrency;
     this.currencyRate = tripListService.currencyRate;
-    for (let i = 0; i < this.trips.length; i++) {
-      this.tripsMap.set(this.trips[i].id, i);
-    }
+    this.updateTripsMap();
   }
 
   protected readonly exchangeRates = exchangeRates;
   protected readonly customElements = customElements;
+
+  deleteTrip(id: number) {
+     this.trips.splice(this.tripsMap.get(id) || 0, 1);
+    this.tripsMap = new Map<number, number>();
+    this.updateTripsMap();
+  }
 }

@@ -30,6 +30,9 @@
             <button class="btn btn-danger m-2 px-3" (click)="cancelReservation(trip.id)" [disabled]="trip.maxCapacity - trip.reservedCapacity === trip.maxCapacity">-</button>
             <div *ngIf="isSoldOut(trip.id)">SOLD OUT</div>
           </div>
+          <button class="btn btn-danger" (click)="deleteTrip(trip.id)">
+            Usuń wycieczkę
+          </button>
         </div>
       </div>
     </div>
