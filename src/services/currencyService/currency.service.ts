@@ -1,34 +1,31 @@
 import { Injectable } from '@angular/core';
 import {exchangeRates} from "./money";
-import {Observable} from "rxjs";
+import {BehaviorSubject, Observable} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
 })
 export class CurrencyService {
-  currency: string;
-  currencyRate: number;
+  currency = new BehaviorSubject('USD');
+  private currencyRate = new BehaviorSubject(1);
   currenciesList: string[];
+  currency$ = this.currency.asObservable();
+  currencyRate$ = this.currencyRate.asObservable();
 
   changeCurrency(currency: string) {
-    this.currency = currency;
-    this.currencyRate = exchangeRates.get(currency) || 1;
+    this.currency.next(currency);
+    this.currencyRate.next(exchangeRates.get(currency) || 1);
   }
 
   getData(): Observable<any> {
     return new Observable((observer) => {
       observer.next({
-        currency: this.currency,
-        currencyRate: this.currencyRate,
         currenciesList: this.currenciesList,
-        changeCurrency: this.changeCurrency.bind(this),
       });
     });
   }
 
   constructor() {
-    this.currency = 'USD';
-    this.currencyRate = 1;
     this.currenciesList = ['USD', 'EUR', 'GBP', 'JPY', 'PLN'];
   }
 }

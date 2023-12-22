@@ -18,10 +18,7 @@ export class CurrencyDropdownComponent implements OnInit {
   currencyRate: number;
   currenciesList: string[];
 
-  changeCurrency(currency: string) {
-    this.currency = currency;
-    this.currencyRate = 1;
-  }
+  changeCurrency(currency: string){}
 
   constructor(private currencyService: CurrencyService) {
     this.currency = 'USD';
@@ -30,12 +27,15 @@ export class CurrencyDropdownComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.currencyService.getData().subscribe(data => {
-        this.currency = data.currency;
-        this.currencyRate = data.currencyRate;
-        this.currenciesList = data.currenciesList;
-        this.changeCurrency = data.changeCurrency;
-      }
-    );
+    this.currencyService.currency$.subscribe((currency: string) => {
+      this.currency = currency;
+    });
+    this.currencyService.currencyRate$.subscribe((currencyRate: number) => {
+      this.currencyRate = currencyRate;
+    });
+    this.currencyService.getData().subscribe((data: any) => {
+      this.currenciesList = data.currenciesList;
+    });
+    this.changeCurrency = (currency: string) => this.currencyService.changeCurrency(currency);
   }
 }

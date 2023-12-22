@@ -4,7 +4,7 @@
         class="px-4"
       >
         <img [src]="trip.photoLink"
-             alt="Trip Photo" style="border-radius: 50%;" class="card-img-top img-fluid">
+             alt="Trip Photo" class="card-img-top rounded-circle" style="height: 200px; object-fit: cover; object-position: center;">
         <div class="card-body">
           <h3 class="card-title">{{ trip.name | uppercase }} - {{ trip.country | uppercase }}</h3>
           <div class="card-text">
@@ -22,6 +22,37 @@
           <button class="btn btn-danger" (click)="deleteTrip(trip.id)">
             Usuń wycieczkę
           </button>
+          <div class="pt-5 d-flex flex-column justify-content-center align-items-center">
+            <h4>Rate</h4>
+            <div class="d-flex align-items-center">
+              <button [ngClass]="{'btn-success': trip.rating >= 1, 'btn-danger': trip.rating < 1}" class="m-2 px-3 btn" (click)="rateTrip(trip.id, 1)">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+                  <path d="M8 0l2.48 5.16 5.52.8-4 4.18.94 5.84-5.24-2.77-5.24 2.77.94-5.84-4-4.18 5.52-.8z"/>
+                </svg>
+              </button>
+
+              <button class="m-2 px-3 btn" [ngClass]="{'btn-success': trip.rating >= 2, 'btn-danger': trip.rating < 2}" (click)="rateTrip(trip.id, 2)">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+                  <path d="M8 0l2.48 5.16 5.52.8-4 4.18.94 5.84-5.24-2.77-5.24 2.77.94-5.84-4-4.18 5.52-.8z"/>
+                </svg>
+              </button>
+              <button class="m-2 px-3 btn" [ngClass]="{'btn-success': trip.rating >= 3, 'btn-danger': trip.rating < 3}" (click)="rateTrip(trip.id, 3)">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+                  <path d="M8 0l2.48 5.16 5.52.8-4 4.18.94 5.84-5.24-2.77-5.24 2.77.94-5.84-4-4.18 5.52-.8z"/>
+                </svg>
+              </button>
+              <button class="m-2 px-3 btn" [ngClass]="{'btn-success': trip.rating >= 4, 'btn-danger': trip.rating < 4}" (click)="rateTrip(trip.id, 4)">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+                  <path d="M8 0l2.48 5.16 5.52.8-4 4.18.94 5.84-5.24-2.77-5.24 2.77.94-5.84-4-4.18 5.52-.8z"/>
+                </svg>
+              </button>
+              <button class="m-2 px-3 btn" [ngClass]="{'btn-success': trip.rating >= 5, 'btn-danger': trip.rating < 5}" (click)="rateTrip(trip.id, 5)">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+                  <path d="M8 0l2.48 5.16 5.52.8-4 4.18.94 5.84-5.24-2.77-5.24 2.77.94-5.84-4-4.18 5.52-.8z"/>
+                </svg>
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>

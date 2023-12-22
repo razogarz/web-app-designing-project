@@ -9,7 +9,8 @@ let trips = [
     "maxCapacity": 20,
     "reservedCapacity": 0,
     "description": "Explore the historic capital of Poland. Visit cultural landmarks and enjoy the vibrant atmosphere of Warsaw.",
-    "photoLink": "/assets/tripsDummyPhotos/warsaw.jpg"
+    "photoLink": "/assets/tripsDummyPhotos/warsaw.jpg",
+    "rating": 4
   },
   {
     "id": 1,
@@ -21,7 +22,8 @@ let trips = [
     "maxCapacity": 20,
     "reservedCapacity": 0,
     "description": "Discover the rich history and cultural heritage of Moscow. Visit iconic landmarks and experience Russian hospitality.",
-    "photoLink": "/assets/tripsDummyPhotos/moscow.jpg"
+    "photoLink": "/assets/tripsDummyPhotos/moscow.jpg",
+    "rating": 4
   },
   {
     "id": 2,
@@ -33,7 +35,8 @@ let trips = [
     "maxCapacity": 20,
     "reservedCapacity": 0,
     "description": "Immerse yourself in the dynamic city life of Berlin. Explore historical sites, art scenes, and diverse neighborhoods.",
-    "photoLink": "/assets/tripsDummyPhotos/london.jpg"
+    "photoLink": "/assets/tripsDummyPhotos/london.jpg",
+    "rating": 3.5
   },
   {
     "id": 3,
@@ -45,7 +48,8 @@ let trips = [
     "maxCapacity": 20,
     "reservedCapacity": 0,
     "description": "Experience the charm of Gdansk with its medieval architecture, maritime history, and picturesque waterfront.",
-    "photoLink": "/assets/tripsDummyPhotos/warsaw.jpg"
+    "photoLink": "/assets/tripsDummyPhotos/warsaw.jpg",
+    "rating": 4.2
   },
   {
     "id": 4,
@@ -56,8 +60,9 @@ let trips = [
     "unitPrice": 1500, // Adjusted price for London
     "maxCapacity": 20,
     "reservedCapacity": 0,
-    "description": "Indulge in the sophistication of London, from world-class museums to iconic landmarks.",
-    "photoLink": "/assets/tripsDummyPhotos/london.jpg"
+    "description": "Indulge in the sophistication of London, from world-class museums to iconic landmarks. Enjoy the royal treatment.",
+    "photoLink": "/assets/tripsDummyPhotos/london.jpg",
+    "rating": 4.8
   },
   {
     "id": 5,
@@ -69,7 +74,8 @@ let trips = [
     "maxCapacity": 20,
     "reservedCapacity": 0,
     "description": "Experience the romance and elegance of Paris. Visit iconic landmarks and savor exquisite cuisine.",
-    "photoLink": "/assets/tripsDummyPhotos/moscow.jpg"
+    "photoLink": "/assets/tripsDummyPhotos/moscow.jpg",
+    "rating": 4.5
   },
   {
     "id": 6,
@@ -81,7 +87,8 @@ let trips = [
     "maxCapacity": 20,
     "reservedCapacity": 0,
     "description": "Discover the historical treasures of Rome, from the Colosseum to the Vatican. Immerse yourself in ancient culture.",
-    "photoLink": "/assets/tripsDummyPhotos/warsaw.jpg"
+    "photoLink": "/assets/tripsDummyPhotos/warsaw.jpg",
+    "rating": 4.7
   },
   {
     "id": 7,
@@ -93,7 +100,8 @@ let trips = [
     "maxCapacity": 20,
     "reservedCapacity": 0,
     "description": "Explore the vibrant and futuristic cityscape of Tokyo. Witness a perfect blend of tradition and modernity.",
-    "photoLink": "/assets/tripsDummyPhotos/moscow.jpg"
+    "photoLink": "/assets/tripsDummyPhotos/moscow.jpg",
+    "rating": 4.3
   },
   {
     "id": 8,
@@ -105,7 +113,8 @@ let trips = [
     "maxCapacity": 20,
     "reservedCapacity": 0,
     "description": "Experience the lively atmosphere of Barcelona. Enjoy unique architecture, beautiful beaches, and delicious tapas.",
-    "photoLink": "/assets/tripsDummyPhotos/warsaw.jpg"
+    "photoLink": "/assets/tripsDummyPhotos/warsaw.jpg",
+    "rating": 4.6
   },
   {
     "id": 9,
@@ -117,7 +126,8 @@ let trips = [
     "maxCapacity": 20,
     "reservedCapacity": 0,
     "description": "Immerse yourself in the hustle and bustle of New York City. Explore iconic landmarks and diverse neighborhoods.",
-    "photoLink": "/assets/tripsDummyPhotos/london.jpg"
+    "photoLink": "/assets/tripsDummyPhotos/london.jpg",
+    "rating": 4.9
   }
 ];
 

@@ -9,4 +9,5 @@ export type Trip = {
   reservedCapacity: number;
   description: string;
   photoLink: string;
+  rating: number;
 };

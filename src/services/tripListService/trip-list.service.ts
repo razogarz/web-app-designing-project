@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {Trip} from "../../types";
 import {tripsData} from "../../components/trip-list/tripsDummyData/trips";
-import {Observable, of} from "rxjs";
+import {BehaviorSubject, Observable, of} from "rxjs";
 
 @Injectable({
   providedIn: 'root',
@@ -9,12 +9,10 @@ import {Observable, of} from "rxjs";
 export class TripListService {
   trips: Trip[];
   tripsSearch: Trip[];
+  tripsMap: Map<number, number>;
+  private reservedTripsCount = new BehaviorSubject<number>(0);
+  reservedTripsCount$ = this.reservedTripsCount.asObservable();
 
-  getReservedTrips(): Observable<number> {
-    return of(this.trips.reduce((acc, trip) => acc + trip.reservedCapacity, 0));
-  }
-
-  tripsMap: Map<number, number> = new Map<number, number>();
   reserveSpot(tripId: number) {
     let idMapped = this.tripsMap.get(tripId);
     if(idMapped === undefined) return;
@@ -23,6 +21,7 @@ export class TripListService {
     if (max - reserved > 0){
       this.trips[idMapped].reservedCapacity++;
     }
+    this.updateReservedTripsCount();
   }
 
   cancelReservation(tripId: number) {
@@ -30,8 +29,9 @@ export class TripListService {
     if(idMapped === undefined) return;
     let reserved = this.trips[idMapped].reservedCapacity;
     if (reserved > 0){
-      this.trips[tripId].reservedCapacity--;
+      this.trips[idMapped].reservedCapacity--;
     }
+    this.updateReservedTripsCount();
   }
 
   isSoldOut(tripId: number) {
@@ -63,14 +63,48 @@ export class TripListService {
       this.tripsMap = new Map<number, number>();
       this.updateTripsMap();
     }
+    this.updateReservedTripsCount();
+  }
+
+  addTrip(trip: Trip) {
+    this.trips.push(trip);
+    this.tripsMap = new Map<number, number>();
+    this.updateTripsMap();
+    this.updateReservedTripsCount();
+  }
+
+  rateTrip(id: number, rating: number) {
+    console.log(id, rating);
+    const index = this.tripsMap.get(id);
+    if (index !== undefined) {
+      this.trips[index].rating = rating;
+    }
+  }
+
+  getReservedTripsCost() {
+    let cost = 0;
+    this.trips.forEach((trip) => {
+      console.log({
+        reservedCapacity: trip.reservedCapacity,
+        unitPrice: trip.unitPrice,
+      })
+      cost += trip.reservedCapacity * trip.unitPrice;
+    });
+    return cost;
   }
 
   getTrips(): Observable<Trip[]> {
     return of(this.trips);
   }
 
+  updateReservedTripsCount() {
+    this.reservedTripsCount.next(this.trips.reduce((acc, trip) => acc + trip.reservedCapacity, 0));
+  }
+
   constructor() {
     this.trips = tripsData;
     this.tripsSearch = tripsData;
+    this.tripsMap = new Map<number, number>();
+    this.updateTripsMap();
   }
 }
