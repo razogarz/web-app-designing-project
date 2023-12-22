@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
-import {TripListComponent} from "../components/trip-list/trip-list.component";
+import {TripsListPageComponent} from "../pages/trips-list-page/trips-list-page.component";
 
 export const routes: Routes = [
-  { path: '', component: TripListComponent },
+  { path: '', component: TripsListPageComponent },
 ];

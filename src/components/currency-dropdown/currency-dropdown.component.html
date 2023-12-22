@@ -1,0 +1,6 @@
+<div class="container-fluid d-flex justify-content-center align-items-center mb-5">
+  Wybierz walutę:
+  <select [(ngModel)]="currency" (ngModelChange)="changeCurrency($event)" class="form-control w-25 mx-3">
+    <option *ngFor="let currency of currenciesList" [value]="currency">{{ currency }}</option>
+  </select>
+</div>

@@ -1,9 +1,9 @@
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {CurrencyPipe, NgForOf, NgIf, NgStyle, UpperCasePipe} from "@angular/common";
 import {TripListService} from "../../services/tripListService/trip-list.service";
+import {CurrencyService} from "../../services/currencyService/currency.service";
 import {Trip} from "../../types";
 import {FormsModule} from "@angular/forms";
-import {exchangeRates} from "./tripsDummyData/money";
 @Component({
   selector: 'app-trip-list',
   standalone: true,
@@ -18,80 +18,37 @@ import {exchangeRates} from "./tripsDummyData/money";
   templateUrl: './trip-list.component.html',
   styleUrls: ['./trip-list.component.css']
 })
-export class TripListComponent {
+export class TripListComponent implements  OnInit {
   trips: Trip[] = [];
-  currency: string = "";
+  currency: string = 'USD';
   currencyRate: number = 1;
-  currenciesList: string[] = ['USD', 'EUR', 'GBP', 'JPY', 'PLN'];
 
-  tripsMap: Map<number, number> = new Map<number, number>();
-  reserveSpot(tripId: number) {
-    let idMapped = this.tripsMap.get(tripId);
-    if(idMapped === undefined) return;
-    let max = this.trips[idMapped].maxCapacity;
-    let reserved = this.trips[idMapped].reservedCapacity;
-    if (max - reserved > 0){
-      this.trips[idMapped].reservedCapacity++;
-    }
+  isSoldOut: (id: number) => boolean = () => false;
+  shouldHidePlusButton: (id: number) => boolean = () => false;
+  isGettingSoldOut: (id: number) => boolean = () => false;
+  reserveSpot: (id: number) => void = () => {};
+  cancelReservation: (id: number) => void = () => {};
+  deleteTrip: (id: number) => void = () => {};
+
+  constructor(private tripListService: TripListService, private currencyService: CurrencyService) {}
+
+  ngOnInit(): void {
+    this.tripListService.getTrips().subscribe((trips: Trip[]) => {
+        this.trips = trips;
+      }
+    );
+    this.currencyService.getData().subscribe((data: any) => {
+        this.currency = data.currency;
+        this.currencyRate = data.currencyRate;
+      }
+    );
+    this.isSoldOut = this.tripListService.isSoldOut;
+    this.shouldHidePlusButton = this.tripListService.shouldHidePlusButton;
+    this.isGettingSoldOut = this.tripListService.isGettingSoldOut;
+    this.reserveSpot = this.tripListService.reserveSpot;
+    this.cancelReservation = this.tripListService.cancelReservation;
+    this.deleteTrip = this.tripListService.deleteTrip;
   }
 
-  cancelReservation(tripId: number) {
-    let idMapped = this.tripsMap.get(tripId);
-    if(idMapped === undefined) return;
-    let reserved = this.trips[idMapped].reservedCapacity;
-    if (reserved > 0){
-      this.trips[tripId].reservedCapacity--;
-    }
-  }
 
-  isSoldOut(tripId: number) {
-    let idMapped = this.tripsMap.get(tripId);
-    if(idMapped === undefined) return false;
-    return this.trips[idMapped].maxCapacity === this.trips[idMapped].reservedCapacity;
-  }
-
-  shouldHidePlusButton(tripId: number) {
-    return this.isSoldOut(tripId);
-  }
-
-  getReservedTripsCount() {
-    let count = 0;
-    for (let i = 0; i < this.trips.length; i++) {
-      count += this.trips[i].reservedCapacity;
-    }
-    return count;
-  }
-
-  isGettingSoldOut(tripId: number) {
-    let idMapped = this.tripsMap.get(tripId);
-    if(idMapped === undefined) return false;
-    return this.trips[idMapped].maxCapacity - this.trips[idMapped].reservedCapacity <= 3;
-  }
-
-  changeCurrency(currency: string) {
-    this.currency = currency;
-    this.currencyRate = exchangeRates.get(currency) || 1;
-  }
-
-    updateTripsMap() {
-        for (let i = 0; i < this.trips.length; i++) {
-        this.tripsMap.set(this.trips[i].id, i);
-        }
-    }
-
-  constructor(private tripListService: TripListService) {
-    this.trips = tripListService.trips;
-    this.currency = tripListService.selectedCurrency;
-    this.currencyRate = tripListService.currencyRate;
-    this.updateTripsMap();
-  }
-
-  protected readonly exchangeRates = exchangeRates;
-  protected readonly customElements = customElements;
-
-  deleteTrip(id: number) {
-     this.trips.splice(this.tripsMap.get(id) || 0, 1);
-    this.tripsMap = new Map<number, number>();
-    this.updateTripsMap();
-  }
 }
