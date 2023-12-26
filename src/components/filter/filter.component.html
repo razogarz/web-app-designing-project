@@ -1,0 +1,56 @@
+<div class="d-flex flex-column w-75 justify-content-center align-items-center">
+  <label for="name">Name:</label>
+  <input type="text" name="name" id="name" [(ngModel)]="filter.name" (keyup)="this.filterTrips()">
+
+  <div class="dropdown my-2">
+    <div>
+      <button class="btn btn-secondary dropdown-toggle" type="button" id="countryDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+        Select Country
+      </button>
+      <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton"> <!-- *ngFor="let country of countries" -->
+        <li *ngFor="let country of countries" class="dropdown-item" (click)="this.addCountry(country)">{{country}}</li>
+      </ul>
+      <h2>Selected:</h2>
+      <div>
+        <button *ngFor="let country of filter.country" class="btn btn-secondary m-2" (click)="this.removeCountry(country)">
+          {{country}}
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x" viewBox="0 0 16 16">
+            <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="d-flex flex-column" >
+      <label for="date_start">Start Date:</label>
+      <input type="date" name="date" id="date_start" [(ngModel)]="filter.startDate" (change)="this.filterTrips()">
+
+      <label for="date_end">End Date:</label>
+      <input type="date" name="date" id="date_end" [(ngModel)]="filter.endDate" (change)="this.filterTrips()">
+
+      <label for="price_from">Price From:</label>
+      <input type="number" name="price" id="price_from" [(ngModel)]="filter.priceFrom" (change)="this.filterTrips()" [value]="this.filter.priceFrom">
+
+      <label for="price_to">Price To:</label>
+      <input type="number" name="price" id="price_to" [(ngModel)]="filter.priceTo" (change)="this.filterTrips()" [value]="this.filter.priceTo">
+
+    </div>
+
+  <div class="dropdown my-2">
+    <button class="btn btn-secondary dropdown-toggle" type="button" id="ratingDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+      Select rating
+    </button>
+    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+      <li *ngFor="let rating of [1,2,3,4,5]" class="dropdown-item" (click)="this.addRating(rating)">{{rating}}</li>
+    </ul>
+    <h2>Selected:</h2>
+    <div>
+      <button *ngFor="let rating of filter.rating" class="btn btn-secondary m-2" (click)="this.removeRating(rating)">
+        {{rating}}
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x" viewBox="0 0 16 16">
+          <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</div>

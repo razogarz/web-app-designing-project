@@ -24,7 +24,7 @@ export class AddTripFormComponent implements OnInit{
 
   ngOnInit(): void {
     this.initiateForm();
-    this.tripListService.getTrips().subscribe((trips: Trip[]) => {
+    this.tripListService.getOriginalTrips().subscribe((trips: Trip[]) => {
         this.highestId = trips.reduce((max, trip) => trip.id > max ? trip.id : max, 0);
       });
     this.currencyService.currencyRate$.subscribe((rate: number) => {

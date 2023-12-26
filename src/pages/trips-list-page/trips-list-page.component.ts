@@ -4,6 +4,7 @@ import {CurrencyDropdownComponent} from "../../components/currency-dropdown/curr
 import {TripListComponent} from "../../components/trip-list/trip-list.component";
 import {AddTripFormComponent} from "../../components/add-trip-form/add-trip-form.component";
 import {ReservedTripsCostComponent} from "../../components/reserved-trips-cost/reserved-trips-cost.component";
+import {FilterComponent} from "../../components/filter/filter.component";
 
 @Component({
   selector: 'app-trips-list-page',
@@ -13,7 +14,8 @@ import {ReservedTripsCostComponent} from "../../components/reserved-trips-cost/r
     CurrencyDropdownComponent,
     TripListComponent,
     AddTripFormComponent,
-    ReservedTripsCostComponent
+    ReservedTripsCostComponent,
+    FilterComponent
   ],
   templateUrl: './trips-list-page.component.html',
   styleUrl: './trips-list-page.component.css'

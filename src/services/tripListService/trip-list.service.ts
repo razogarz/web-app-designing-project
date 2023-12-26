@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {Trip} from "../../types";
+import {Filter, Trip} from "../../types";
 import {tripsData} from "../../components/trip-list/tripsDummyData/trips";
 import {BehaviorSubject, Observable, of} from "rxjs";
 
@@ -8,10 +8,12 @@ import {BehaviorSubject, Observable, of} from "rxjs";
 })
 export class TripListService {
   trips: Trip[];
-  tripsSearch: Trip[];
+  tripsOriginal: Trip[];
   tripsMap: Map<number, number>;
   private reservedTripsCount = new BehaviorSubject<number>(0);
   reservedTripsCount$ = this.reservedTripsCount.asObservable();
+  private tripsObservable = new BehaviorSubject<Trip[]>([]);
+  tripsObservable$ = this.tripsObservable.asObservable();
 
   reserveSpot(tripId: number) {
     let idMapped = this.tripsMap.get(tripId);
@@ -36,18 +38,20 @@ export class TripListService {
 
   isSoldOut(tripId: number) {
     let idMapped = this.tripsMap.get(tripId);
-    if(idMapped === undefined) return false;
-    return this.trips[idMapped].maxCapacity === this.trips[idMapped].reservedCapacity;
+    if (idMapped === undefined || idMapped >= this.trips.length) return false;
+    return this.trips[idMapped].maxCapacity === this.trips[idMapped]?.reservedCapacity;
   }
 
   shouldHidePlusButton(tripId: number) {
+    let idMapped = this.tripsMap.get(tripId);
+    if (idMapped === undefined || idMapped >= this.trips.length) return false;
     return this.isSoldOut(tripId);
   }
 
   isGettingSoldOut(tripId: number) {
     let idMapped = this.tripsMap.get(tripId);
-    if(idMapped === undefined) return false;
-    return this.trips[idMapped].maxCapacity - this.trips[idMapped].reservedCapacity <= 3;
+    if (idMapped === undefined || idMapped >= this.trips.length) return false;
+    return this.trips[idMapped].maxCapacity - this.trips[idMapped]?.reservedCapacity <= 3;
   }
 
   updateTripsMap() {
@@ -93,18 +97,38 @@ export class TripListService {
     return cost;
   }
 
-  getTrips(): Observable<Trip[]> {
-    return of(this.trips);
+  getOriginalTrips(): Observable<Trip[]> {
+    return of(this.tripsOriginal);
   }
 
   updateReservedTripsCount() {
     this.reservedTripsCount.next(this.trips.reduce((acc, trip) => acc + trip.reservedCapacity, 0));
   }
 
+  filterTrips(filter: Filter){
+    this.trips = this.tripsOriginal.filter((trip) => {
+      let name = trip.name.toLowerCase().includes(filter.name.toLowerCase());
+      let country = filter.country.length === 0 || filter.country.includes(trip.country);
+      let startDate = filter.startDate === '' || filter.startDate <= trip.startDate;
+      let endDate = filter.endDate === '' || filter.endDate >= trip.endDate;
+      let priceFrom = filter.priceFrom === 0 || filter.priceFrom <= trip.unitPrice;
+      let priceTo = filter.priceTo === 0 || filter.priceTo >= trip.unitPrice;
+      let rating = filter.rating.length === 0 || filter.rating.includes(Math.floor(trip.rating));
+      return name && country && startDate && endDate && priceFrom && priceTo && rating;
+    });
+    this.updateTripsMap();
+    this.tripsObservable.next(this.trips);
+    console.log({
+      trips: this.trips,
+      filter: filter
+    });
+  }
+
   constructor() {
     this.trips = tripsData;
-    this.tripsSearch = tripsData;
+    this.tripsOriginal = tripsData;
     this.tripsMap = new Map<number, number>();
+    this.tripsObservable.next(this.trips);
     this.updateTripsMap();
   }
 }

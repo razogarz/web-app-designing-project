@@ -35,7 +35,7 @@ export class TripListComponent implements  OnInit {
   constructor(private tripListService: TripListService, private currencyService: CurrencyService) {}
 
   ngOnInit(): void {
-    this.tripListService.getTrips().subscribe((trips: Trip[]) => {
+    this.tripListService.tripsObservable$.subscribe((trips: Trip[]) => {
         this.trips = trips;
       }
     );

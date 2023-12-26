@@ -11,3 +11,13 @@ export type Trip = {
   photoLink: string;
   rating: number;
 };
+
+export type Filter = {
+  name: string;
+  country: string[];
+  startDate: string;
+  endDate: string;
+  priceFrom: number;
+  priceTo: number;
+  rating: number[];
+};
