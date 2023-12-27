@@ -5,6 +5,7 @@ import {TripListComponent} from "../../components/trip-list/trip-list.component"
 import {AddTripFormComponent} from "../../components/add-trip-form/add-trip-form.component";
 import {ReservedTripsCostComponent} from "../../components/reserved-trips-cost/reserved-trips-cost.component";
 import {FilterComponent} from "../../components/filter/filter.component";
+import {CheckoutButtonComponent} from "../../components/checkout-button/checkout-button.component";
 
 @Component({
   selector: 'app-trips-list-page',
@@ -15,7 +16,8 @@ import {FilterComponent} from "../../components/filter/filter.component";
     TripListComponent,
     AddTripFormComponent,
     ReservedTripsCostComponent,
-    FilterComponent
+    FilterComponent,
+    CheckoutButtonComponent
   ],
   templateUrl: './trips-list-page.component.html',
   styleUrl: './trips-list-page.component.css'

@@ -131,4 +131,16 @@ export class TripListService {
     this.tripsObservable.next(this.trips);
     this.updateTripsMap();
   }
+
+  isMostExpensive(tripId: number) {
+    let idMapped = this.tripsMap.get(tripId);
+    if (idMapped === undefined || idMapped >= this.trips.length) return false;
+    return this.trips[idMapped].unitPrice === this.trips.reduce((max, trip) => trip.unitPrice > max ? trip.unitPrice : max, 0);
+  }
+
+  isCheapest(tripId: number) {
+    let idMapped = this.tripsMap.get(tripId);
+    if (idMapped === undefined || idMapped >= this.trips.length) return false;
+    return this.trips[idMapped].unitPrice === this.trips.reduce((min, trip) => trip.unitPrice < min ? trip.unitPrice : min, 0);
+  }
 }

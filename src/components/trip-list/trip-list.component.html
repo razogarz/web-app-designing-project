@@ -1,5 +1,5 @@
 <div class="container-fluid w-75 d-flex flex-wrap">
-    <div *ngFor="let trip of trips" class="card col-12 col-md-6 col-lg-4 p-3">
+    <div *ngFor="let trip of trips" class="card col-12 col-md-6 col-lg-4 p-3 border-2" [ngStyle]="{'border-color': isGettingSoldOut(trip.id) ? 'red' : (isCheapest(trip.id) ? 'yellow' : (isMostExpensive(trip.id) ? 'blue' : 'black'))}">
       <div [style.background-color]="shouldHidePlusButton(trip.id) ? 'lightgray' : 'white'" [ngStyle]="{'border-color': isGettingSoldOut(trip.id) ? 'red' : 'black'}"
         class="px-4"
       >
@@ -30,7 +30,6 @@
                   <path d="M8 0l2.48 5.16 5.52.8-4 4.18.94 5.84-5.24-2.77-5.24 2.77.94-5.84-4-4.18 5.52-.8z"/>
                 </svg>
               </button>
-
               <button class="m-2 px-3 btn" [ngClass]="{'btn-success': trip.rating >= 2, 'btn-danger': trip.rating < 2}" (click)="rateTrip(trip.id, 2)">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
                   <path d="M8 0l2.48 5.16 5.52.8-4 4.18.94 5.84-5.24-2.77-5.24 2.77.94-5.84-4-4.18 5.52-.8z"/>

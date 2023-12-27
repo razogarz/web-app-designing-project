@@ -1,14 +1,16 @@
 import { Component } from '@angular/core';
 import {RouterLink, RouterLinkActive, RouterOutlet} from "@angular/router";
+import {CheckoutButtonComponent} from "../checkout-button/checkout-button.component";
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [
-    RouterOutlet,
-    RouterLink,
-    RouterLinkActive
-  ],
+    imports: [
+        RouterOutlet,
+        RouterLink,
+        RouterLinkActive,
+        CheckoutButtonComponent
+    ],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css'
 })

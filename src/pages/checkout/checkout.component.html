@@ -1,7 +1,18 @@
-<main class="container min-vh-100">
-  <div class="row">
-    <div class="col-md-12">
-      <h1>Checkout</h1>
-    </div>
-  </div>
+<main class="container-fluid min-vh-100">
+  <h1>Checkout</h1>
+  <ul class="list-group">
+    <li *ngFor="let trip of checkoutTrips" class="list-group-item d-flex justify-content-between align-items-center">
+      <span>{{ trip.name }}</span>
+      <div>
+        <span class="badge bg-primary rounded-pill mx-2">{{ trip.unitPrice | currency }}</span>
+        <button type="button" class="btn btn-danger" (click)="removeTripFromCheckout(trip)">Remove</button>
+      </div>
+    </li>
+  </ul>
+  <h2>
+    Total: <span class="badge bg-primary rounded-pill">{{ total | currency }}</span>
+  </h2>
+  <button type="button" class="btn btn-primary" (click)="addTripsToHistory()">
+    Buy
+  </button>
 </main>

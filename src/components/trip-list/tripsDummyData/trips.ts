@@ -44,7 +44,7 @@ let trips = [
     "country": "Poland",
     "startDate": "2023-12-01",
     "endDate": "2023-12-31",
-    "unitPrice": 1000,
+    "unitPrice": 1400,
     "maxCapacity": 20,
     "reservedCapacity": 0,
     "description": "Experience the charm of Gdansk with its medieval architecture, maritime history, and picturesque waterfront.",

@@ -4,6 +4,7 @@ import {TripListService} from "../../services/tripListService/trip-list.service"
 import {CurrencyService} from "../../services/currencyService/currency.service";
 import {Trip} from "../../types";
 import {FormsModule} from "@angular/forms";
+import {SelectedTripsService} from "../../services/selectedTrips/selected-trips.service";
 @Component({
   selector: 'app-trip-list',
   standalone: true,
@@ -19,10 +20,11 @@ import {FormsModule} from "@angular/forms";
   templateUrl: './trip-list.component.html',
   styleUrls: ['./trip-list.component.css']
 })
-export class TripListComponent implements  OnInit {
+export class TripListComponent implements OnInit {
   trips: Trip[] = [];
   currency: string = 'USD';
   currencyRate: number = 1;
+  checkoutTrips: Trip[] = [];
 
   isSoldOut: (id: number) => boolean = () => false;
   shouldHidePlusButton: (id: number) => boolean = () => false;
@@ -31,8 +33,11 @@ export class TripListComponent implements  OnInit {
   cancelReservation: (id: number) => void = () => {};
   deleteTrip: (id: number) => void = () => {};
   rateTrip(id: number, number: number) {}
+  isMostExpensive(id: number) {return false;}
 
-  constructor(private tripListService: TripListService, private currencyService: CurrencyService) {}
+  isCheapest(id: number) {return false;}
+
+  constructor(private tripListService: TripListService, private currencyService: CurrencyService, private selectedTrips: SelectedTripsService) {}
 
   ngOnInit(): void {
     this.tripListService.tripsObservable$.subscribe((trips: Trip[]) => {
@@ -48,12 +53,28 @@ export class TripListComponent implements  OnInit {
     this.isSoldOut = (tripId: number) => this.tripListService.isSoldOut(tripId);
     this.shouldHidePlusButton = (tripId: number) => this.tripListService.shouldHidePlusButton(tripId);
     this.isGettingSoldOut = (tripId: number) => this.tripListService.isGettingSoldOut(tripId);
-    this.reserveSpot = (tripId: number) => this.tripListService.reserveSpot(tripId);
-    this.cancelReservation = (tripId: number) => this.tripListService.cancelReservation(tripId);
-    this.deleteTrip = (tripId: number) => this.tripListService.deleteTrip(tripId);
+    this.reserveSpot = (tripId: number) => {
+      this.tripListService.reserveSpot(tripId);
+      this.selectedTrips.addTripToCheckout(this.trips.find((trip) => trip.id === tripId) as Trip);
+    }
+    this.cancelReservation = (tripId: number) => {
+      this.tripListService.cancelReservation(tripId);
+      this.selectedTrips.removeTripFromCheckout(this.trips.find((trip) => trip.id === tripId) as Trip);
+    }
+    this.deleteTrip = (tripId: number) => {
+      this.tripListService.deleteTrip(tripId);
+      this.selectedTrips.removeTripFromHistory(this.trips.find((trip) => trip.id === tripId) as Trip);
+    }
     this.rateTrip = (tripId: number, rating: number) => this.tripListService.rateTrip(tripId, rating);
-  }
+    this.isMostExpensive = (tripId: number) => this.tripListService.isMostExpensive(tripId);
+    this.isCheapest = (tripId: number) => this.tripListService.isCheapest(tripId);
 
+    this.selectedTrips.checkoutTrips$.subscribe((trips: Trip[]) => {
+      this.checkoutTrips = trips;
+    });
+
+
+  }
 
 
 }

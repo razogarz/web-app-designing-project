@@ -1,7 +1,13 @@
-<main class="container">
+<main class="container min-vh-100">
   <div class="row">
     <div class="col-md-12">
-      <h1>Checkout</h1>
+      <h1 class="mt-4 mb-4">History</h1>
     </div>
   </div>
+  <ul class="list-group">
+    <li *ngFor="let trip of historyTrips" class="list-group-item d-flex justify-content-between align-items-center">
+      <span>{{ trip.name }}</span>
+      <span class="badge bg-primary rounded-pill">{{ trip.unitPrice | currency }}</span>
+    </li>
+  </ul>
 </main>
