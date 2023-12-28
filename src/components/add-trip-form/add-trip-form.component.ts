@@ -41,6 +41,7 @@ export class AddTripFormComponent implements OnInit{
       unitPrice: 0,
       maxCapacity: 0,
       reservedCapacity: 0,
+      yourReservations: 0,
       description: '',
       photoLink: '/assets/tripsDummyPhotos/warsaw.jpg'
     });

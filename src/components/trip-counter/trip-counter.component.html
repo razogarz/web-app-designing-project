@@ -1,4 +1,4 @@
-<div class="text-white container-fluid w-100 d-flex flex-column justify-content-center align-items-center mb-5" [style.backgroundColor]="reservedTripsCount >= 10 ? 'green' : 'red'">
+<div class="text-white container-fluid" [style.backgroundColor]="reservedTripsCount >= 10 ? 'green' : 'red'">
   <p>Sumaryczna ilość zarezerwowanych wycieczek: {{ reservedTripsCount }}</p>
   <app-reserved-trips-cost></app-reserved-trips-cost>
 </div>

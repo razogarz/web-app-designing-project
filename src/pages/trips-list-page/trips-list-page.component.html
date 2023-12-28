@@ -1,11 +1,11 @@
-<div class="d-flex flex-column align-items-center" >
-  <div class="container-fluid d-flex flex-row justify-content-evenly">
+<div class="container-fluid d-flex flex-column flex-lg-row">
+  <div class="d-flex flex-column flex-grow-1">
     <app-filter></app-filter>
-    <div class="w-50">
-      <app-trip-counter ></app-trip-counter>
-      <app-currency-dropdown ></app-currency-dropdown>
-    </div>
   </div>
-
-<app-trip-list ></app-trip-list>
+  <div class="d-flex flex-column flex-grow-1">
+    <app-trip-counter ></app-trip-counter>
+    <app-currency-dropdown ></app-currency-dropdown>
+  </div>
 </div>
+<app-trip-list ></app-trip-list>
+<app-pagination></app-pagination>

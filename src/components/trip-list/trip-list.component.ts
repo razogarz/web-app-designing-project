@@ -5,6 +5,7 @@ import {CurrencyService} from "../../services/currencyService/currency.service";
 import {Trip} from "../../types";
 import {FormsModule} from "@angular/forms";
 import {SelectedTripsService} from "../../services/selectedTrips/selected-trips.service";
+
 @Component({
   selector: 'app-trip-list',
   standalone: true,
@@ -25,9 +26,11 @@ export class TripListComponent implements OnInit {
   currency: string = 'USD';
   currencyRate: number = 1;
   checkoutTrips: Trip[] = [];
+  paginationPage = 1;
 
   isSoldOut: (id: number) => boolean = () => false;
   shouldHidePlusButton: (id: number) => boolean = () => false;
+  shouldHideMinusButton: (id: number) => boolean = () => false;
   isGettingSoldOut: (id: number) => boolean = () => false;
   reserveSpot: (id: number) => void = () => {};
   cancelReservation: (id: number) => void = () => {};
@@ -39,6 +42,9 @@ export class TripListComponent implements OnInit {
 
   constructor(private tripListService: TripListService, private currencyService: CurrencyService, private selectedTrips: SelectedTripsService) {}
 
+  getTripsPage() {
+    return this.trips.slice((this.paginationPage - 1) * 3, this.paginationPage * 3);
+  }
   ngOnInit(): void {
     this.tripListService.tripsObservable$.subscribe((trips: Trip[]) => {
         this.trips = trips;
@@ -52,6 +58,7 @@ export class TripListComponent implements OnInit {
     });
     this.isSoldOut = (tripId: number) => this.tripListService.isSoldOut(tripId);
     this.shouldHidePlusButton = (tripId: number) => this.tripListService.shouldHidePlusButton(tripId);
+    this.shouldHideMinusButton = (tripId: number) => this.tripListService.shouldHideMinusButton(tripId);
     this.isGettingSoldOut = (tripId: number) => this.tripListService.isGettingSoldOut(tripId);
     this.reserveSpot = (tripId: number) => {
       this.tripListService.reserveSpot(tripId);
@@ -73,8 +80,8 @@ export class TripListComponent implements OnInit {
       this.checkoutTrips = trips;
     });
 
-
+    this.tripListService.currentPaginationPage$.subscribe((page: number) => {
+      this.paginationPage = page;
+    });
   }
-
-
 }

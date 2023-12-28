@@ -7,6 +7,7 @@ export type Trip = {
   unitPrice: number;
   maxCapacity: number;
   reservedCapacity: number;
+  yourReservations: number;
   description: string;
   photoLink: string;
   rating: number;

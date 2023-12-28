@@ -6,6 +6,7 @@ import {AddTripFormComponent} from "../../components/add-trip-form/add-trip-form
 import {ReservedTripsCostComponent} from "../../components/reserved-trips-cost/reserved-trips-cost.component";
 import {FilterComponent} from "../../components/filter/filter.component";
 import {CheckoutButtonComponent} from "../../components/checkout-button/checkout-button.component";
+import {PaginationComponent} from "../../components/pagination/pagination.component";
 
 @Component({
   selector: 'app-trips-list-page',
@@ -17,7 +18,8 @@ import {CheckoutButtonComponent} from "../../components/checkout-button/checkout
     AddTripFormComponent,
     ReservedTripsCostComponent,
     FilterComponent,
-    CheckoutButtonComponent
+    CheckoutButtonComponent,
+    PaginationComponent
   ],
   templateUrl: './trips-list-page.component.html',
   styleUrl: './trips-list-page.component.css'

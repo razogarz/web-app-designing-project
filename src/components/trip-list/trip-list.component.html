@@ -1,22 +1,29 @@
-<div class="container-fluid w-75 d-flex flex-wrap">
-    <div *ngFor="let trip of trips" class="card col-12 col-md-6 col-lg-4 p-3 border-2" [ngStyle]="{'border-color': isGettingSoldOut(trip.id) ? 'red' : (isCheapest(trip.id) ? 'yellow' : (isMostExpensive(trip.id) ? 'blue' : 'black'))}">
-      <div [style.background-color]="shouldHidePlusButton(trip.id) ? 'lightgray' : 'white'" [ngStyle]="{'border-color': isGettingSoldOut(trip.id) ? 'red' : 'black'}"
-        class="px-4"
+<div class="container-fluid d-flex flex-wrap p-5">
+    <div *ngFor="let trip of getTripsPage()" class="col-12 col-lg-6 col-xl-4 p-2" >
+      <div
+        class="card px-5 border border-3 rounded-3 d-flex flex-column justify-content-between"
+        [style.background-color]="isGettingSoldOut(trip.id) ? 'red' :
+                    (isCheapest(trip.id) ? 'yellow' :
+                      (isMostExpensive(trip.id) ? 'cyan' : 'white'))"
+        [style.border-color]="isGettingSoldOut(trip.id) ? 'red' :
+                    (isCheapest(trip.id) ? 'yellow' :
+                      (isMostExpensive(trip.id) ? 'blue' : 'black'))"
+
       >
-        <img [src]="trip.photoLink"
-             alt="Trip Photo" class="card-img-top rounded-circle" style="height: 200px; object-fit: cover; object-position: center;">
-        <div class="card-body">
-          <h3 class="card-title">{{ trip.name | uppercase }} - {{ trip.country | uppercase }}</h3>
+        <img [src]="trip.photoLink ? trip.photoLink : 'https://www.publicdomainpictures.net/pictures/280000/velka/not-found-image-15383864787lu.jpg'"
+             alt="Trip Photo" class="card-img-top rounded-circle p-2" style="height: 200px; width: 200px; object-fit: cover; margin: 0 auto;">
+        <div class="card-body ">
+          <h5 class="card-title h-25">{{ trip.name | uppercase }} - {{ trip.country | uppercase }}</h5>
           <div class="card-text">
             <p>{{ trip.description }}</p>
             <p>From: {{ trip.startDate }}</p>
             <p>To: {{ trip.endDate }}</p>
             <p>Price: {{ trip.unitPrice * currencyRate | currency: currency }}</p>
-            <p>Places left: {{ trip.maxCapacity - trip.reservedCapacity }}</p>
+            <p>Places left: {{ trip.maxCapacity - trip.reservedCapacity - trip.yourReservations }}</p>
           </div>
           <div class="d-flex align-items-center">
             <button class="btn btn-success m-2 px-3" (click)="reserveSpot(trip.id)" [disabled]="shouldHidePlusButton(trip.id)">+</button>
-            <button class="btn btn-danger m-2 px-3" (click)="cancelReservation(trip.id)" [disabled]="trip.maxCapacity - trip.reservedCapacity === trip.maxCapacity">-</button>
+            <button class="btn btn-danger m-2 px-3" (click)="cancelReservation(trip.id)" [disabled]="shouldHideMinusButton(trip.id)">-</button>
             <div *ngIf="isSoldOut(trip.id)">SOLD OUT</div>
           </div>
           <button class="btn btn-danger" (click)="deleteTrip(trip.id)">

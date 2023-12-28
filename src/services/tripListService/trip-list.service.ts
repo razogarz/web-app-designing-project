@@ -1,98 +1,162 @@
-import { Injectable } from '@angular/core';
+import {inject, Injectable} from '@angular/core';
+import {BehaviorSubject, Observable, of} from 'rxjs';
+import {
+  collection,
+  collectionData,
+  deleteDoc,
+  doc,
+  Firestore,
+  getDocs,
+  orderBy,
+  query,
+  setDoc, where,
+} from "@angular/fire/firestore";
 import {Filter, Trip} from "../../types";
 import {tripsData} from "../../components/trip-list/tripsDummyData/trips";
-import {BehaviorSubject, Observable, of} from "rxjs";
+import {runTransaction} from "@angular/fire/database";
 
 @Injectable({
   providedIn: 'root',
 })
 export class TripListService {
+  firestore: Firestore = inject(Firestore);
+  tripsCollection;
+  tripsCollectionData: Observable<any>;
+
   trips: Trip[];
   tripsOriginal: Trip[];
-  tripsMap: Map<number, number>;
+
+  currentPaginationPage = new BehaviorSubject(1);
+  currentPaginationPage$ = this.currentPaginationPage.asObservable();
+
   private reservedTripsCount = new BehaviorSubject<number>(0);
   reservedTripsCount$ = this.reservedTripsCount.asObservable();
   private tripsObservable = new BehaviorSubject<Trip[]>([]);
   tripsObservable$ = this.tripsObservable.asObservable();
 
-  reserveSpot(tripId: number) {
-    let idMapped = this.tripsMap.get(tripId);
-    if(idMapped === undefined) return;
-    let max = this.trips[idMapped].maxCapacity;
-    let reserved = this.trips[idMapped].reservedCapacity;
-    if (max - reserved > 0){
-      this.trips[idMapped].reservedCapacity++;
-    }
+  constructor() {
+    this.tripsCollection = collection(this.firestore, 'Trips');
+    this.trips = tripsData;
+    this.tripsOriginal = tripsData;
     this.updateReservedTripsCount();
+    this.tripsObservable.next(this.trips);
+    try {
+      this.tripsCollectionData = collectionData(this.tripsCollection);
+      this.tripsCollectionData.subscribe((trips) => {
+        this.trips = trips;
+        this.tripsOriginal = trips;
+        this.updateReservedTripsCount();
+        this.tripsObservable.next(this.trips);
+      });
+    }
+    catch (e) {
+      this.tripsCollectionData = of([]);
+      console.log(e);
+    }
+  }
+
+  getTrips(): Observable<any[]> {
+    const q = query(
+      this.tripsCollection,
+      orderBy("startDate"),
+    );
+    return collectionData(q, {idField: 'id'});
+  }
+
+  addTrip(trip: Trip): Observable<boolean> {
+    const response = new Observable<boolean>(observer => {
+      setDoc(doc(this.tripsCollection), trip).then(() => {
+        observer.next(true);
+        observer.complete();
+      }).catch(error => {
+        console.error('Error adding trip: ', error);
+        observer.next(false);
+        observer.complete();
+      });
+    });
+    response.subscribe((success) => {
+      console.log(success);
+    });
+    return response;
+  }
+  async deleteTrip(tripId: number) {
+    const q = query(this.tripsCollection, where('id', '==', tripId));
+    try {
+      const querySnapshot = await getDocs(q);
+      if (!querySnapshot.empty) {
+        querySnapshot.forEach((docSnapshot) => {
+          const tripDocRef = doc(this.tripsCollection, docSnapshot.id);
+          deleteDoc(tripDocRef).then(() => {
+            console.log("Document successfully deleted!");
+          }).catch((error) => {
+            console.error("Error removing document: ", error);
+          });
+        });
+      } else {
+        console.log("No matching documents found");
+      }
+    } catch (error) {
+      console.error("Error querying documents: ", error);
+    }
+  }
+
+  changePaginationPage(page: number) {
+    this.currentPaginationPage.next(page);
+  }
+
+  reserveSpot(tripId: number) {
+    const trip = this.trips.find((trip) => trip.id === tripId);
+    if (trip) {
+      trip.yourReservations++;
+      this.updateReservedTripsCount();
+    }
   }
 
   cancelReservation(tripId: number) {
-    let idMapped = this.tripsMap.get(tripId);
-    if(idMapped === undefined) return;
-    let reserved = this.trips[idMapped].reservedCapacity;
-    if (reserved > 0){
-      this.trips[idMapped].reservedCapacity--;
+    const trip = this.trips.find((trip) => trip.id === tripId);
+    if (trip) {
+      trip.yourReservations--;
+      this.updateReservedTripsCount();
     }
-    this.updateReservedTripsCount();
   }
-
   isSoldOut(tripId: number) {
-    let idMapped = this.tripsMap.get(tripId);
-    if (idMapped === undefined || idMapped >= this.trips.length) return false;
-    return this.trips[idMapped].maxCapacity === this.trips[idMapped]?.reservedCapacity;
+    const trip = this.trips.find((trip) => trip.id === tripId);
+    if (trip) {
+      return trip.reservedCapacity + trip.yourReservations >= trip.maxCapacity;
+    }
+    return false;
   }
 
   shouldHidePlusButton(tripId: number) {
-    let idMapped = this.tripsMap.get(tripId);
-    if (idMapped === undefined || idMapped >= this.trips.length) return false;
     return this.isSoldOut(tripId);
   }
 
+  shouldHideMinusButton(tripId: number) {
+    const trip = this.trips.find((trip) => trip.id === tripId);
+
+    return trip ? trip.yourReservations <= 0 : true;
+  }
+
   isGettingSoldOut(tripId: number) {
-    let idMapped = this.tripsMap.get(tripId);
-    if (idMapped === undefined || idMapped >= this.trips.length) return false;
-    return this.trips[idMapped].maxCapacity - this.trips[idMapped]?.reservedCapacity <= 3;
-  }
-
-  updateTripsMap() {
-    for (let i = 0; i < this.trips.length; i++) {
-      this.tripsMap.set(this.trips[i].id, i);
+    const sellOutThreshold = 3;
+    const trip = this.trips.find((trip) => trip.id === tripId);
+    if (trip) {
+      return trip.reservedCapacity + trip.yourReservations + sellOutThreshold >= trip.maxCapacity;
     }
-  }
-
-  deleteTrip(id: number) {
-    const index = this.tripsMap.get(id);
-    if (index !== undefined) {
-      this.trips.splice(index, 1);
-      this.tripsMap = new Map<number, number>();
-      this.updateTripsMap();
-    }
-    this.updateReservedTripsCount();
-  }
-
-  addTrip(trip: Trip) {
-    this.trips.push(trip);
-    this.tripsMap = new Map<number, number>();
-    this.updateTripsMap();
-    this.updateReservedTripsCount();
+    return false;
   }
 
   rateTrip(id: number, rating: number) {
-    console.log(id, rating);
-    const index = this.tripsMap.get(id);
-    if (index !== undefined) {
-      this.trips[index].rating = rating;
+    const trip = this.trips.find((trip) => trip.id === id);
+    if (trip) {
+      trip.rating = (trip.rating + rating) / 2;
     }
   }
 
   getReservedTripsCost() {
     let cost = 0;
     this.trips.forEach((trip) => {
-      console.log({
-        reservedCapacity: trip.reservedCapacity,
-        unitPrice: trip.unitPrice,
-      })
-      cost += trip.reservedCapacity * trip.unitPrice;
+      cost += trip.yourReservations * trip.unitPrice;
     });
     return cost;
   }
@@ -102,7 +166,7 @@ export class TripListService {
   }
 
   updateReservedTripsCount() {
-    this.reservedTripsCount.next(this.trips.reduce((acc, trip) => acc + trip.reservedCapacity, 0));
+    this.reservedTripsCount.next(this.trips.reduce((acc, trip) => acc + trip.yourReservations, 0));
   }
 
   filterTrips(filter: Filter){
@@ -116,31 +180,27 @@ export class TripListService {
       let rating = filter.rating.length === 0 || filter.rating.includes(Math.floor(trip.rating));
       return name && country && startDate && endDate && priceFrom && priceTo && rating;
     });
-    this.updateTripsMap();
     this.tripsObservable.next(this.trips);
     console.log({
       trips: this.trips,
       filter: filter
     });
   }
-
-  constructor() {
-    this.trips = tripsData;
-    this.tripsOriginal = tripsData;
-    this.tripsMap = new Map<number, number>();
-    this.tripsObservable.next(this.trips);
-    this.updateTripsMap();
-  }
-
   isMostExpensive(tripId: number) {
-    let idMapped = this.tripsMap.get(tripId);
-    if (idMapped === undefined || idMapped >= this.trips.length) return false;
-    return this.trips[idMapped].unitPrice === this.trips.reduce((max, trip) => trip.unitPrice > max ? trip.unitPrice : max, 0);
+    const trip = this.trips.find((trip) => trip.id === tripId);
+    if (trip) {
+      return trip.unitPrice === Math.max(...this.trips.map((trip) => trip.unitPrice));
+    }
+    return false;
   }
 
   isCheapest(tripId: number) {
-    let idMapped = this.tripsMap.get(tripId);
-    if (idMapped === undefined || idMapped >= this.trips.length) return false;
-    return this.trips[idMapped].unitPrice === this.trips.reduce((min, trip) => trip.unitPrice < min ? trip.unitPrice : min, 0);
+    const trip = this.trips.find((trip) => trip.id === tripId);
+    if (trip) {
+      return trip.unitPrice === Math.min(...this.trips.map((trip) => trip.unitPrice));
+    }
+    return false;
   }
+
+
 }
