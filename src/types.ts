@@ -13,6 +13,11 @@ export type Trip = {
   rating: number;
 };
 
+export type checkoutItem = {
+  trip: Trip;
+  quantity: number;
+};
+
 export type Filter = {
   name: string;
   country: string[];

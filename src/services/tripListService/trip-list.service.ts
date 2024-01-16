@@ -12,8 +12,6 @@ import {
   setDoc, where,
 } from "@angular/fire/firestore";
 import {Filter, Trip} from "../../types";
-import {tripsData} from "../../components/trip-list/tripsDummyData/trips";
-import {runTransaction} from "@angular/fire/database";
 
 @Injectable({
   providedIn: 'root',
@@ -23,8 +21,8 @@ export class TripListService {
   tripsCollection;
   tripsCollectionData: Observable<any>;
 
-  trips: Trip[];
-  tripsOriginal: Trip[];
+  trips: Trip[] = [];
+  tripsOriginal: Trip[] = [];
 
   currentPaginationPage = new BehaviorSubject(1);
   currentPaginationPage$ = this.currentPaginationPage.asObservable();
@@ -36,10 +34,7 @@ export class TripListService {
 
   constructor() {
     this.tripsCollection = collection(this.firestore, 'Trips');
-    this.trips = tripsData;
-    this.tripsOriginal = tripsData;
     this.updateReservedTripsCount();
-    this.tripsObservable.next(this.trips);
     try {
       this.tripsCollectionData = collectionData(this.tripsCollection);
       this.tripsCollectionData.subscribe((trips) => {
@@ -149,7 +144,7 @@ export class TripListService {
   rateTrip(id: number, rating: number) {
     const trip = this.trips.find((trip) => trip.id === id);
     if (trip) {
-      trip.rating = (trip.rating + rating) / 2;
+      trip.rating = rating;
     }
   }
 
@@ -203,4 +198,14 @@ export class TripListService {
   }
 
 
+  buyTrips(checkoutTrips: Trip[]) {
+    checkoutTrips.forEach((trip) => {
+      const tripIndex = this.trips.findIndex((t) => t.id === trip.id);
+      if (tripIndex !== -1) {
+        this.trips[tripIndex].reservedCapacity += trip.yourReservations;
+        this.trips[tripIndex].yourReservations = 0;
+      }
+    });
+    this.updateReservedTripsCount();
+  }
 }

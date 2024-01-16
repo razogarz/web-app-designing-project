@@ -4,6 +4,7 @@ import {HomePageComponent} from "../pages/home-page/home-page.component";
 import {AddTripFormComponent} from "../components/add-trip-form/add-trip-form.component";
 import {CheckoutComponent} from "../pages/checkout/checkout.component";
 import {HistoryComponent} from "../pages/history/history.component";
+import {SingleTripPageComponent} from "../pages/single-trip-page/single-trip-page.component";
 
 export const routes: Routes = [
   { path: '', component: HomePageComponent},
@@ -11,5 +12,5 @@ export const routes: Routes = [
   { path: 'tripForm', component: AddTripFormComponent},
   { path: 'checkout', component: CheckoutComponent},
   { path: 'history', component: HistoryComponent},
-
+  { path: 'trip/:id', component: SingleTripPageComponent, pathMatch: 'full'},
 ];

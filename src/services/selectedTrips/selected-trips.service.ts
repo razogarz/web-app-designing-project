@@ -30,10 +30,7 @@ export class SelectedTripsService {
     this.historyTrips.next(historyTrips);
     this.checkoutTrips = new BehaviorSubject([] as Trip[]);
     this.checkoutTrips$ = this.checkoutTrips.asObservable();
-    console.log({
-      historyTrips: this.historyTrips.getValue(),
-      checkoutTrips: this.checkoutTrips.getValue()
-    })
+
   }
 
   removeTripFromHistory(trip: Trip) {

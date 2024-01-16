@@ -37,8 +37,12 @@ export class FilterComponent implements OnInit {
         this.trips = trips;
       }
     );
+    this.tripListService.getOriginalTrips().subscribe((trips: Trip[]) => {
+        this.countries = [...new Set(trips.map((trip: Trip) => trip.country))];
+      }
+    );
     this.filterTrips = () => this.tripListService.filterTrips(this.filter);
-    this.countries = this.trips.map((trip: Trip) => trip.country);
+
   }
 
   addCountry(country: string) {

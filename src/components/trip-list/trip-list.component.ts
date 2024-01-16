@@ -1,10 +1,11 @@
 import {Component, OnInit} from '@angular/core';
-import {CurrencyPipe, NgClass, NgForOf, NgIf, NgStyle, UpperCasePipe} from "@angular/common";
+import {CurrencyPipe, NgClass, NgForOf, NgIf, NgOptimizedImage, NgStyle, UpperCasePipe} from "@angular/common";
 import {TripListService} from "../../services/tripListService/trip-list.service";
 import {CurrencyService} from "../../services/currencyService/currency.service";
 import {Trip} from "../../types";
 import {FormsModule} from "@angular/forms";
 import {SelectedTripsService} from "../../services/selectedTrips/selected-trips.service";
+import {RouterLink, RouterLinkActive} from "@angular/router";
 
 @Component({
   selector: 'app-trip-list',
@@ -16,7 +17,10 @@ import {SelectedTripsService} from "../../services/selectedTrips/selected-trips.
     NgIf,
     NgStyle,
     FormsModule,
-    NgClass
+    NgClass,
+    NgOptimizedImage,
+    RouterLink,
+    RouterLinkActive
   ],
   templateUrl: './trip-list.component.html',
   styleUrls: ['./trip-list.component.css']
@@ -48,6 +52,7 @@ export class TripListComponent implements OnInit {
   ngOnInit(): void {
     this.tripListService.tripsObservable$.subscribe((trips: Trip[]) => {
         this.trips = trips;
+        console.log(this.trips);
       }
     );
     this.currencyService.currency$.subscribe((currency: string) => {

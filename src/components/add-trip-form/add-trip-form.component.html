@@ -44,6 +44,11 @@
       <textarea id="description" formControlName="description" required class="form-control"></textarea>
     </div>
 
+    <div class="mb-3 container-fluid">
+      <label for="photoLink" class="form-label">Photo Link:</label>
+      <input type="text" id="photoLink" formControlName="photoLink" required class="form-control">
+    </div>
+
     <button type="submit" [disabled]="tripForm.invalid" class="btn btn-primary">Add Trip</button>
   </form>
 

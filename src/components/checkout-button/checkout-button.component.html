@@ -6,14 +6,16 @@
     </svg>
   </button>
   <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-    <li *ngIf="this.checkoutTrips.length == 0" class="dropdown-item">No trips in checkout</li>
-    <li *ngFor="let trip of this.checkoutTrips" class="dropdown-item">
+    <li *ngIf="this.checkoutItems.length == 0" class="dropdown-item">No trips in checkout</li>
+    <li *ngFor="let item of this.checkoutItems"
+    class="dropdown-item">
       <div class="d-flex justify-content-between">
         <div>
-          <h6>{{trip.name}}</h6>
+          <h6>{{item.trip.name}}</h6>
+          <h6>Q: {{item.quantity}}</h6>
         </div>
         <div>
-          <button class="btn btn-danger" (click)="this.removeTripFromCheckout(trip)">
+          <button class="btn btn-danger" (click)="this.removeTripFromCheckout(item.trip)">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x" viewBox="0 0 16 16">
               <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"/>
             </svg>
